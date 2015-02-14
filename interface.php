@@ -9,4 +9,16 @@ if ($mysqli->connect_errno) {
 	echo "Connection worked!<br>";
 }
 
+if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
+    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+}
+
+echo "<h2>Add a video into inventory<h2>";
+echo "<form action = 'interface.php' method = 'post'>";
+echo "Title: <input name = 'title' type = 'text'><br>";
+echo "Cateory: <input name = 'category' type = 'text'><br>";
+echo "Lenth: <input name = 'lenth' type = 'text'><br>";
+echo "<input name = 'add_movie' type = 'submit' value = 'Add Movie'>";
+echo "</form>";
+
 ?>
