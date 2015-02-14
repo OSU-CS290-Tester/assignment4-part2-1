@@ -13,12 +13,29 @@ if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, leng
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
 
-echo "<h2>Add a video into inventory<h2>";
+if (isset($_POST['title'])) {
+$name = $_POST['title'];
+$category = $_POST['category'];
+$length = $_POST['length'];
+}
+
+if (!$stmt->bind_param("sss", $name, $category, $length)) {
+    echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+if (isset($_POST['title'])) {
+	if (!$stmt->execute()) {
+    	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+	}
+}
+
+echo "<h2>Add a video into inventory</h2>";
 echo "<form action = 'interface.php' method = 'post'>";
 echo "Title: <input name = 'title' type = 'text'><br>";
 echo "Cateory: <input name = 'category' type = 'text'><br>";
-echo "Lenth: <input name = 'lenth' type = 'text'><br>";
+echo "Lenth: <input name = 'length' type = 'text'><br>";
 echo "<input name = 'add_movie' type = 'submit' value = 'Add Movie'>";
 echo "</form>";
+
+echo "<h2>Store Inventory</h2>";
 
 ?>
