@@ -6,30 +6,42 @@ ini_set('display_errors', 1);
 $mysqli = new mysqli("oniddb.cws.oregonstate.edu", "thomasw-db", "s824hShW4EKidis5", "thomasw-db");
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
-} else {
-	echo "Connection worked!<br>";
-}
+} 
+// else {
+// 	echo "Connection worked!<br>";
+// }
 
 //Check if value was posted and sets bound variables values. After submitting data
 //The form rediects to this page with values passed via POST
 if (isset($_POST['title'])) {
-	//prepared statement to input values into database.
-	if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
-    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	$nameCount = strlen($_POST['title']);
+	if($nameCount < 1) {
+		echo 'A movie title must be entered.';
+	} elseif (!is_numeric($_POST['length'])) {
+		echo 'Length must be a number value!';
+	} else {
+		//prepared statement to input values into database.
+		if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
+	    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+		}
+
+		$name = $_POST['title'];
+		$category = $_POST['category'];
+		$length = $_POST['length'];
+
+		//Binds variables 
+		if (!$stmt->bind_param("sss", $name, $category, $length)) {
+			echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+		}
+
+		if (!$stmt->execute()) {
+			if ($stmt->errno == 1062) {
+				echo "Error: Movie titles must be unique!";
+			} else {
+	    		echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+	    	}
+		} 
 	}
-
-	$name = $_POST['title'];
-	$category = $_POST['category'];
-	$length = $_POST['length'];
-
-	//Binds variables 
-	if (!$stmt->bind_param("sss", $name, $category, $length)) {
-   		echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-	}
-
-	if (!$stmt->execute()) {
-    	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
-	} 
 }
 
 //If the delete button is called it redirects to this page passing that ID via url
@@ -101,7 +113,7 @@ $menu_cat = NULL;
 
 //This section creates a drop down menu to filter by category. Pulls all categories
 //And creates options in a while loop.
-if (!($stmt = $mysqli->prepare("SELECT category FROM store_inventory"))) {
+if (!($stmt = $mysqli->prepare("SELECT category FROM store_inventory GROUP BY category"))) {
    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 }
 if (!$stmt->execute()) {
@@ -159,7 +171,7 @@ echo "<table border>";
 echo "<th>Title</th>";
 echo "<th>Category</th>";
 echo "<th>Length</th>";
-echo "<th>Rented</th>";
+echo "<th>Status</th>";
 echo "<th>Status</th>";
 echo "<th>Delete</th>";
 while ($stmt->fetch()) {
