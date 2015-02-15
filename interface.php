@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 //Connect to sql server
-$mysqli = new mysqli("oniddb.cws.oregonstate.edu", "thomasw-db", "s824hShW4EKidis5", "thomasw-db");
+$mysqli = new mysqli("oniddb.cws.oregonstate.edu", "thomasw-db", "", "thomasw-db");
 if ($mysqli->connect_errno) {
     echo "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error;
 } else {
@@ -54,11 +54,12 @@ if(isset($_GET['filter'])) {
 }
 
 if($cat_filter == 'all') {
-	if (!($stmt = $mysqli->prepare("SELECT name, category, length, rented FROM store_inventory"))) {
+	if (!($stmt = $mysqli->prepare("SELECT id, name, category, length, rented FROM store_inventory"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
 }
 
+$out_id = NULL;
 $out_name = NULL;
 $out_cateory = NULL;
 $out_length = NULL;
@@ -68,23 +69,30 @@ if (!$stmt->execute()) {
   	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 }
 
-if (!$stmt->bind_result($out_name, $out_cateory, $out_length, $out_rented)) {
+if (!$stmt->bind_result($out_id, $out_name, $out_cateory, $out_length, $out_rented)) {
     echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
 }
 
-if ($rented == 0) {
-	$rented = "Checked in";
-} else {
-	$rented = "Checked out";
-}
-
 echo "<table border>";
+echo "<th>Title</th>";
+echo "<th>Category</th>";
+echo "<th>Length</th>";
+echo "<th>Rented</th>";
+echo "<th>Check in/out</th>";
+echo "<th>Delete</th>";
 while ($stmt->fetch()) {
+	if ($out_rented == 1) {
+		$out_rented = "Checked in";
+	} else {
+		$out_rented = "Checked out";
+	}
 echo "<tr>";
 echo "<td>" . $out_name . "</td>";
 echo "<td>" . $out_cateory . "</td>";
 echo "<td>" . $out_length . "</td>";
 echo "<td>" . $out_rented . "</td>";
+echo "<td><a href='interface.php?rented=$out_id'><button>Check in/out</button></a></td>";
+echo "<td><a href='interface.php?deleted=$out_id'><button>Delete</button></a></td>";
 echo "</tr>";
 }
 echo "</table>";
