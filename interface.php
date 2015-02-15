@@ -16,6 +16,7 @@ if (isset($_POST['title'])) {
 	if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
+
 	$name = $_POST['title'];
 	$category = $_POST['category'];
 	$length = $_POST['length'];
@@ -45,6 +46,10 @@ if(isset($_GET['deleted'])) {
 	} 
 }
 
+if(isset($_POST['delete_all'])) {
+	!$mysqli->query("DELETE FROM store_inventory");
+}
+
 echo "<h2>Add a video into inventory</h2>";
 echo "<form action = 'interface.php' method = 'post'>";
 echo "Title: <input name = 'title' type = 'text'><br>";
@@ -52,16 +57,41 @@ echo "Cateory: <input name = 'category' type = 'text'><br>";
 echo "Lenth: <input name = 'length' type = 'text'><br>";
 echo "<input name = 'add_movie' type = 'submit' value = 'Add Movie'>";
 echo "</form>";
+?>
 
-echo "<h2>Store Inventory</h2>";
+<h2>Delete all Records</h2>
+<form action = 'interface.php' method = 'post'>
+<input type = 'hidden' name = 'delete_all' value = 1>
+<input type = 'submit' value = 'Delete All'>
+</form>
+
+<h2>Store Inventory</h2>
+
+<?php
+$menu_cat = NULL;
+//This section creates a drop down menu to filter by category. 
+if (!($stmt = $mysqli->prepare("SELECT category FROM store_inventory"))) {
+   echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+}
+
+if (!$stmt->execute()) {
+  	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+if (!$stmt->bind_result($menu_cat)) {
+    echo "Binding output parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+}
+
+
+
 //This section resets prepared statement to fetch data from database and print to the table.
 $cat_filter = 'all';
 
 if(isset($_GET['filter'])) {
 	$cat_filter = $_GET['filter'];
-} else {
-	$cat_filter = 'all';
-}
+} 
+
+
 
 if($cat_filter == 'all') {
 	if (!($stmt = $mysqli->prepare("SELECT id, name, category, length, rented FROM store_inventory"))) {
