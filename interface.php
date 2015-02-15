@@ -10,27 +10,38 @@ if ($mysqli->connect_errno) {
 	echo "Connection worked!<br>";
 }
 
-//prepared statement to input values into database.
-if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
-    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
-}
-
 //Check if value was posted and sets bound variables values
 if (isset($_POST['title'])) {
-$name = $_POST['title'];
-$category = $_POST['category'];
-$length = $_POST['length'];
-}
+	//prepared statement to input values into database.
+	if (!($stmt = $mysqli->prepare("INSERT INTO store_inventory(name, category, length) VALUES (?,?,?)"))) {
+    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+	$name = $_POST['title'];
+	$category = $_POST['category'];
+	$length = $_POST['length'];
 
-//Binds variables 
-if (!$stmt->bind_param("sss", $name, $category, $length)) {
-    echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
-}
+	//Binds variables 
+	if (!$stmt->bind_param("sss", $name, $category, $length)) {
+   		echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+	}
 
-//If input is valid, executes statement and adds content to database
-if (isset($_POST['title']) ) {
 	if (!$stmt->execute()) {
     	echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
+	} 
+}
+
+if(isset($_GET['deleted'])) {
+	$deleteID = $_GET['deleted'];
+	if (!($stmt = $mysqli->prepare("DELETE FROM store_inventory WHERE id = ?"))) {
+    echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
+	}
+
+	if (!$stmt->bind_param("i", $deleteID)) {
+    echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
+	}
+
+	if (!$stmt->execute()) {
+    echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
 	} 
 }
 
@@ -43,7 +54,6 @@ echo "<input name = 'add_movie' type = 'submit' value = 'Add Movie'>";
 echo "</form>";
 
 echo "<h2>Store Inventory</h2>";
-
 //This section resets prepared statement to fetch data from database and print to the table.
 $cat_filter = 'all';
 
@@ -57,6 +67,8 @@ if($cat_filter == 'all') {
 	if (!($stmt = $mysqli->prepare("SELECT id, name, category, length, rented FROM store_inventory"))) {
     echo "Prepare failed: (" . $mysqli->errno . ") " . $mysqli->error;
 	}
+} else {
+
 }
 
 $out_id = NULL;
@@ -96,7 +108,5 @@ echo "<td><a href='interface.php?deleted=$out_id'><button>Delete</button></a></t
 echo "</tr>";
 }
 echo "</table>";
-
-
 
 ?>
