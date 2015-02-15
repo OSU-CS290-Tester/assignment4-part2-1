@@ -1,0 +1,40 @@
+Start: Sun, 15 Feb 2015 14:30:00 -0800
+End: Sun, 15 Feb 2015 15:11:31 -0800
+Tasks: Added better error handling to match requirements
+
+Start: Sun, 15 Feb 2015 12:30:00 -0800
+End: Sun, 15 Feb 2015 13:45:52 -0800
+Tasks: Implemented Category filter. Movies are ordered alphabetically
+
+Start: Sun, 15 Feb 2015 11:30:00 -0800
+End: Sun, 15 Feb 2015 12:21:28 -0800
+Tasks: Delete All button is functional and removes all items from the database.
+
+Start: Sun, 15 Feb 2015 10:30:00 -0800
+End: Sun, 15 Feb 2015 11:21:57 -0800
+Tasks: Cleaned up some code, and added delete functionality
+
+Start: Sat, 14 Feb 2015 18:00:00 -0800
+End: Sat, 14 Feb 2015 19:57:56 -0800
+Tasks: Table includes all data. Implemented buttons for delete/check out
+
+Start: Sat, 14 Feb 2015 16:00:00 -0800
+End: Sat, 14 Feb 2015 17:57:42 -0800
+Tasks: Rough version of table printing to screen. Able to populate with DB data
+
+Start: Sat, 14 Feb 2015 15:00:0 -0800
+End: Sat, 14 Feb 2015 15:18:54 -0800
+Tasks: Variables successfully being added to database
+
+Start: Sat, 14 Feb 2015 14:04:13 -0800
+End: Sat, 14 Feb 2015 14:51:04 -0800
+Tasks: Began creating prepared statements and interface
+
+Start: Sat, 14 Feb 2015 13:30:00 -0800
+End: Sat, 14 Feb 2015 14:04:13 -0800
+Tasks: Initial commit. Created db table seperately, beginning interface creation
+
+Start: Sat, 14 Feb 2015 12:30:00 -0800
+End: Sat, 14 Feb 2015 13:37:21 -0800
+Tasks: Initial commit
+(END)
